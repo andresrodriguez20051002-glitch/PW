@@ -1,0 +1,69 @@
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Historias Clínicas</h5>
+            <button class="btn btn-primary" (click)="abrirModal()">Nueva Anotación</button>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Mascota</th>
+                        <th>Médico</th>
+                        <th>Descripción / Evolución</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="listAnotaciones.length === 0">
+                        <td colspan="4" class="text-center">No hay anotaciones registradas</td>
+                    </tr>
+                    <tr *ngFor="let anotacion of listAnotaciones">
+                        <td>{{ anotacion.fecha | date:'yyyy-MM-dd HH:mm' }}</td>
+                        <td>{{ anotacion.historia?.mascota?.nombreMascota }}</td>
+                        <td>{{ anotacion.medico?.nombres }} {{ anotacion.medico?.apellidos }}</td>
+                        <td>{{ anotacion.descripcion }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nueva Anotación -->
+<div class="modal fade" id="modalHistoria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nueva Anotación de Historia</h5>
+                <button type="button" class="btn-close" (click)="closeModal()"></button>
+            </div>
+            <form [formGroup]="form" (ngSubmit)="guardarAnotacion()">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Mascota</label>
+                        <select class="form-select" formControlName="mascota" [compareWith]="compararObjetos">
+                            <option [ngValue]="null" disabled>Selecciona mascota</option>
+                            <option *ngFor="let m of listMascotas" [ngValue]="m">{{ m.nombreMascota }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Médico</label>
+                        <select class="form-select" formControlName="medico" [compareWith]="compararObjetos">
+                            <option [ngValue]="null" disabled>Selecciona médico</option>
+                            <option *ngFor="let med of listMedicos" [ngValue]="med">{{ med.nombres }} {{ med.apellidos }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descripción / Evolución</label>
+                        <textarea class="form-control" formControlName="descripcion" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="enviando">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
